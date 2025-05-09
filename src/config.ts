@@ -2,7 +2,7 @@ import fs, { read } from "fs";
 import os from "os";
 import path from "path";
 
-export type Config = {
+type Config = {
     dbUrl: string;
     currentUserName: string | null;
 }
@@ -13,7 +13,7 @@ export function readConfig() {
         throw new Error(`config file not found at ${configPath}`);
     }
 
-    const rawData = fs.readFileSync(configPath, "utf8");
+    const rawData = fs.readFileSync(configPath, "utf-8");
 
     const rawConfig = JSON.parse(rawData);
     return validateConfig(rawConfig);
@@ -38,7 +38,7 @@ function writeConfig(cfg: Config): void {
         current_user_name: cfg.currentUserName
     }
     const jsonString = JSON.stringify(jsonData, null, 2);
-    fs.writeFileSync(configPath, jsonString);
+    fs.writeFileSync(configPath, jsonString, {encoding: "utf-8"});
 
 }
 
