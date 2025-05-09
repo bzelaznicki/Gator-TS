@@ -44,7 +44,7 @@ function writeConfig(cfg: Config): void {
 
 function getConfigFilePath(): string {
     const homeDir = os.homedir();
-    return path.join(homeDir, ".gator-ts-config.json");
+    return path.join(homeDir, ".gatorconfig.json");
 }
 
 function validateConfig(rawConfig: any): Config {
