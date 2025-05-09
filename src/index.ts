@@ -1,11 +1,13 @@
 import { setUser, readConfig } from "./config";
 import { CommandsRegistry, registerCommand, runCommand } from "./command_handler";
 import { handlerLogin } from "./handler_login";
+import { handlerRegister } from "./handler_register";
 
-function main() {
+async function main() {
     
     const registry: CommandsRegistry ={};
     registerCommand(registry, "login", handlerLogin);
+    registerCommand(registry, "register", handlerRegister)
 
     const args = process.argv.slice(2);
 
@@ -18,7 +20,7 @@ function main() {
     const cmdArgs = args.slice(1);
 
     try {
-      runCommand(registry, cmdName, ...cmdArgs);
+      await runCommand(registry, cmdName, ...cmdArgs);
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -27,6 +29,8 @@ function main() {
       }
       process.exit(1);
     }
+
+    process.exit(0);
   }
   
   main();
