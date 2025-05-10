@@ -18,6 +18,6 @@ export async function resetUsers(){
 }
 
 export async function getUsers(){
-  const [result] = await db.select().from(users);
+  const result = await db.select().from(users);
   return result;
 }
