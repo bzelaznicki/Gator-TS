@@ -2,12 +2,14 @@ import { setUser, readConfig } from "./config";
 import { CommandsRegistry, registerCommand, runCommand } from "./command_handler";
 import { handlerLogin } from "./handler_login";
 import { handlerRegister } from "./handler_register";
+import { handlerReset } from "./handler_reset";
 
 async function main() {
     
     const registry: CommandsRegistry ={};
     registerCommand(registry, "login", handlerLogin);
-    registerCommand(registry, "register", handlerRegister)
+    registerCommand(registry, "register", handlerRegister);
+    registerCommand(registry, "reset", handlerReset);
 
     const args = process.argv.slice(2);
 
