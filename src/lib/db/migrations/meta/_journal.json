@@ -8,6 +8,13 @@
       "when": 1746796932801,
       "tag": "0000_parallel_inertia",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1746857900566,
+      "tag": "0001_parallel_stature",
+      "breakpoints": true
     }
   ]
 }

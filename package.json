@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "drizzle-orm": "^0.43.1",
+    "fast-xml-parser": "^5.2.2",
     "postgres": "^3.4.5"
   }
 }
