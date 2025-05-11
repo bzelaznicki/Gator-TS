@@ -1,5 +1,5 @@
 {
-  "id": "78d0d8b5-7424-4185-a897-53d4b3abe86a",
+  "id": "81b65f3e-c6fb-4717-9b20-1b4929018926",
   "prevId": "7538e6ff-8f91-4661-9100-d0b3166a5dd5",
   "version": "7",
   "dialect": "postgresql",
@@ -65,15 +65,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "feeds_url_unique": {
-          "name": "feeds_url_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "url"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
