@@ -1,9 +1,8 @@
-import { readConfig } from "./config";
 import { createFeedFollow } from "./lib/db/queries/feed_follows";
 import { getFeedByURL } from "./lib/db/queries/feeds";
-import { getUserByName } from "./lib/db/queries/users";
+import { User } from "./lib/db/schema";
 
-export async function handlerFollow(cmdName: string, ...args: string[]){
+export async function handlerFollow(cmdName: string, user: User, ...args: string[]){
 
     if (args.length === 0) {
         throw new Error ("Provide a feed URL");
@@ -11,16 +10,6 @@ export async function handlerFollow(cmdName: string, ...args: string[]){
 
     const feedUrl = args[0];
 
-    const configUser = readConfig().currentUserName;
-
-    if (!configUser){
-        throw new Error ("Log in first!");
-    }
-    const user = await getUserByName(configUser);
-
-    if (!user) {
-        throw new Error ("User not found");
-    }
 
     const feed = await getFeedByURL(feedUrl);
 

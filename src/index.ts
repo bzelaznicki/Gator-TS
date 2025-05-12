@@ -1,5 +1,5 @@
 import { setUser, readConfig } from "./config";
-import { CommandsRegistry, registerCommand, runCommand } from "./command_handler";
+import { CommandsRegistry, registerCommand, runCommand, middlewareLoggedIn } from "./command_handler";
 import { handlerLogin } from "./handler_login";
 import { handlerRegister } from "./handler_register";
 import { handlerReset } from "./handler_reset";
@@ -7,7 +7,6 @@ import { handlerUsers } from "./handler_users";
 import { handlerAgg } from "./handler_agg";
 import { handlerAddFeed } from "./handler_addfeed";
 import { handlerFeeds } from "./handler_feeds";
-import { register } from "module";
 import { handlerFollow } from "./handler_follow";
 import { handlerFollowing } from "./handler_following";
 
@@ -19,10 +18,10 @@ async function main() {
     registerCommand(registry, "reset", handlerReset);
     registerCommand(registry, "users", handlerUsers);
     registerCommand(registry, "agg", handlerAgg);
-    registerCommand(registry, "addfeed", handlerAddFeed);
+    registerCommand(registry, "addfeed", middlewareLoggedIn(handlerAddFeed));
     registerCommand(registry, "feeds", handlerFeeds);
-    registerCommand(registry, "following", handlerFollowing);
-    registerCommand(registry, "follow", handlerFollow);
+    registerCommand(registry, "following", middlewareLoggedIn(handlerFollowing));
+    registerCommand(registry, "follow", middlewareLoggedIn(handlerFollow));
 
   
 
@@ -51,3 +50,4 @@ async function main() {
   }
   
   main();
+

@@ -1,18 +1,7 @@
-import { readConfig } from "./config";
 import { getFeedFollowsForUser } from "./lib/db/queries/feed_follows";
-import { getUserByName } from "./lib/db/queries/users";
+import { User } from "./lib/db/schema";
 
-export async function handlerFollowing(cmdName: string, ...args: string[]) {
-    const configUser = readConfig().currentUserName;
- 
-    if (!configUser){
-         throw new Error ("Log in first!");
-     }
-     const user = await getUserByName(configUser);
- 
-     if (!user) {
-         throw new Error ("User not found");
-     }
+export async function handlerFollowing(cmdName: string, user: User, ...args: string[]) {
 
     const followedFeeds = await getFeedFollowsForUser(user.id);
 
