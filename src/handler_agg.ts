@@ -1,8 +1,9 @@
 import { XMLParser } from "fast-xml-parser";
 import { getNextFeedToFetch, markFeedFetched } from "./lib/db/queries/feeds";
-import { Feed } from "./lib/db/schema";
+import { Feed, NewPost } from "./lib/db/schema";
 import { parseDuration } from "./time_parser";
 import {errorHandler} from "./error_handler"
+import { createPost } from "./lib/db/queries/posts";
 
 
 type RSSFeed = {
@@ -121,18 +122,41 @@ async function scrapeFeeds() {
 
 
 async function scrapeFeed(feed: Feed) {
-    if (!feed.id){
-        throw new Error ("Invalid feed");
-    }
+  if (!feed.id) {
+    throw new Error("Invalid feed");
+  }
   await markFeedFetched(feed.id);
 
   const feedData = await fetchFeed(feed.url);
-
+  
   console.log(
-    `Feed ${feed.name} collected, ${feedData.channel.item.length} posts found`,
+    `Feed ${feed.name} collected, ${feedData.channel.item.length} posts found`
   );
-      for (const item of feedData.channel.item) {
-        console.log(`- ${item.title} (posted on ${item.pubDate}): ${item.link}`);
-        console.log("========================")
+  
+  let newPostCount = 0;
+  for (const item of feedData.channel.item) {
+    const now = new Date();
+    try {
+      await createPost({
+        url: item.link,
+        feedId: feed.id,
+        title: item.title,
+        createdAt: now,
+        updatedAt: now,
+        description: item.description,
+        publishedAt: new Date(item.pubDate),
+      } satisfies NewPost);
+      
+      newPostCount++;
+    } catch (err) {
+      if (err instanceof Error && 
+          err.message.includes('duplicate key value violates unique constraint')) {
+        // Silently ignore duplicate posts
+      } else {
+        console.error(`Error saving post "${item.title}":`, err);
+      }
     }
+  }
+
+  console.log(`Added ${newPostCount} new posts from ${feed.name}`);
 }
