@@ -9,6 +9,8 @@ import { handlerAddFeed } from "./handler_addfeed";
 import { handlerFeeds } from "./handler_feeds";
 import { handlerFollow } from "./handler_follow";
 import { handlerFollowing } from "./handler_following";
+import { handlerUnfollow } from "./handler_unfollow";
+
 
 async function main() {
     
@@ -22,6 +24,7 @@ async function main() {
     registerCommand(registry, "feeds", handlerFeeds);
     registerCommand(registry, "following", middlewareLoggedIn(handlerFollowing));
     registerCommand(registry, "follow", middlewareLoggedIn(handlerFollow));
+    registerCommand(registry, "unfollow", middlewareLoggedIn(handlerUnfollow));
 
   
 
