@@ -1,4 +1,5 @@
 import { readConfig } from "./config";
+import { createFeedFollow } from "./lib/db/queries/feed_follows";
 import { addFeed } from "./lib/db/queries/feeds";
 import { getUserByName } from "./lib/db/queries/users";
 import {Feed, User } from "./lib/db/schema";
@@ -24,6 +25,8 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]) {
     }
 
     const createdFeed = await addFeed(feedName, url, user.id);
+
+    const feedFollow = await createFeedFollow(user.id, createdFeed.id);
 
     console.log(`Feed created: `);
     printFeed(createdFeed, user);

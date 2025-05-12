@@ -15,6 +15,13 @@
       "when": 1746997632417,
       "tag": "0001_fast_shinko_yamashiro",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1747033664294,
+      "tag": "0002_windy_shockwave",
+      "breakpoints": true
     }
   ]
 }
