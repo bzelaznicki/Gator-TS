@@ -1,4 +1,8 @@
 import { XMLParser } from "fast-xml-parser";
+import { getNextFeedToFetch, markFeedFetched } from "./lib/db/queries/feeds";
+import { Feed } from "./lib/db/schema";
+import { parseDuration } from "./time_parser";
+import {errorHandler} from "./error_handler"
 
 
 type RSSFeed = {
@@ -19,15 +23,34 @@ type RSSFeed = {
 
 
   export async function handlerAgg(cmdName: string, ...args: string[]) {
-    const feedURL = "https://www.wagslane.dev/index.xml";
-
-    try {
-        const feed = await fetchFeed(feedURL);
-        console.log(JSON.stringify(feed, null, 2));
-    } catch (error) {
-        console.error("Error fetching feed:", error);
-        process.exit(1); 
+    if (args.length !== 1){
+        throw new Error(`Invalid arguments`);
     }
+
+    const timeArg = args[0];
+    const timeBetweenRequests = parseDuration(timeArg);
+
+    if (!timeBetweenRequests){
+        throw new Error(`invalid duration: ${timeArg}`);
+    }
+
+    console.log(`Collecting feeds every ${timeArg}.`)
+
+    scrapeFeeds().catch(errorHandler);
+
+    const interval = setInterval(() => {
+        scrapeFeeds().catch(errorHandler);
+    }, timeBetweenRequests);
+
+    await new Promise<void>((resolve) => {
+        process.on("SIGINT", () => {
+            console.log("Stopping feed aggregation");
+            clearInterval(interval);
+            resolve();
+        });
+    });
+
+
 }
 
 
@@ -83,4 +106,33 @@ export async function fetchFeed(feedURL: string): Promise<RSSFeed> {
     }
 };
 
+}
+
+async function scrapeFeeds() {
+    const nextFeed = await getNextFeedToFetch();
+
+    if (!nextFeed){
+        console.log("No feeds found.");
+        return;
+    }
+
+    await scrapeFeed(nextFeed);
+}
+
+
+async function scrapeFeed(feed: Feed) {
+    if (!feed.id){
+        throw new Error ("Invalid feed");
+    }
+  await markFeedFetched(feed.id);
+
+  const feedData = await fetchFeed(feed.url);
+
+  console.log(
+    `Feed ${feed.name} collected, ${feedData.channel.item.length} posts found`,
+  );
+      for (const item of feedData.channel.item) {
+        console.log(`- ${item.title} (posted on ${item.pubDate}): ${item.link}`);
+        console.log("========================")
+    }
 }
